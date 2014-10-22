@@ -18,7 +18,7 @@ def chol(A):
     # Initialize
     X = A.copy()
     n = X.shape[1]
-    
+
     # Epsilon as defined by float type
     eps = sys.float_info.epsilon
 
@@ -27,19 +27,31 @@ def chol(A):
         for i in range(0, k):
             s = 0.0
             for j in range(0, i):
-                s = s + (X[i,j]*X[k,j])
+                s += (X[i,j]*X[k,j])
             X[k, i] = (X[k, i] - s)/X[i, i]
+
         s = 0.0
         for j in range(0, k):
-            s = s + pow(X[k,j], 2)
-        if X[k,k] == s:
+            s += pow(X[k, j], 2)
+        if s >= X[k,k]:
             # add jitter when necessary
-            X[k,k] = X[k,k]+eps
-        X[k,k] = np.sqrt(X[k,k] - s)
+            print('noise added: ' + str(s-X[k,k]) + ' to input ' + str(k))
+            X[k,k] = eps
+        else:
+            X[k, k] -= s
+            X[k,k] = np.sqrt(X[k,k])
+
+
+
 
     return np.tril(X, 0)
 
-X = np.array(((1,1,1),(1,1,1),(1,1,2)), dtype=float)
+X = np.array(((2,1,1,1),(1,2,1,1),(1,1,2,1),(1,1,1,2)), dtype=float)
+
+r = np.linalg.matrix_rank(X)
+
+print(r)
+print(np.min(np.linalg.eigvals(X)))
 
 try:
     print(np.linalg.cholesky(X))
@@ -47,4 +59,8 @@ except:
     print('np.linalg.cholesky(X) failed')
 
 print(chol(X))
-print(np.dot(chol(X),chol(X).T))
+out = np.dot(chol(X),chol(X).T)
+print(out)
+r = np.linalg.matrix_rank(out)
+print(r)
+print(np.min(np.linalg.eigvals(out)))
