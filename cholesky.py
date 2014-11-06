@@ -64,7 +64,7 @@ def safe_chol(Y):
             s = cblas_ddot(len, X_local_1, 1, X_local_1, 1);
             if(s >= X[(k*n)+k]){
                 // Force matrix to be PSD
-                X[(k*n)+k] = DBL_MIN;
+                X[(k*n)+k] = 0.0001;
             }
             else{
                 // This sqrt() will fail if not PSD
