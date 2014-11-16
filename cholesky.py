@@ -62,9 +62,9 @@ def safe_chol(Y):
             int len = k;
             X_local_1 = X+(k*n*d_size);
             s = cblas_ddot(len, X_local_1, 1, X_local_1, 1);
-            if(s >= X[(k*n)+k]){
+            if(s >= X[(k*n)+k] - 0.00005){
                 // Force matrix to be PSD
-                X[(k*n)+k] = 0.0001;
+                X[(k*n)+k] = 0.00005;
             }
             else{
                 // This sqrt() will fail if not PSD
